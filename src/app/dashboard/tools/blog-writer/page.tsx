@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import { DashboardLayout } from "../components/DashboardLayout";
+import { DashboardLayout } from "../../../components/DashboardLayout";
 import { ArrowLeft, Sparkles, Copy, Download, RefreshCw, ChevronDown, Wand2 } from "lucide-react";
 import { LoaderCircle } from "lucide-react";
-import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "motion/react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
 const TONES = ["Professional", "Casual", "Friendly", "Formal", "Persuasive"];
@@ -74,7 +74,7 @@ export default function BlogWriterPage() {
       {/* Top bar */}
       <div className="mb-6 flex items-center gap-3">
         <Link
-          to="/tools"
+          href="/tools"
           className="flex h-8 w-8 items-center justify-center rounded-lg no-underline transition-colors hover:bg-[#F0EFFF]"
           style={{ border: "1px solid #E5E7EB" }}
         >

@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "motion/react";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import { Search, ArrowRight, Wand2 } from "lucide-react";
-import { DashboardLayout } from "../components/DashboardLayout";
+import { DashboardLayout } from "../../components/DashboardLayout";
 
 const CATEGORIES = ["All", "Blog", "Copywriting", "SEO", "Social"];
 
@@ -214,7 +214,7 @@ export default function ToolsPage() {
                 Used {tool.uses.toLocaleString()} times
               </span>
               <Link
-                to={tool.path}
+                href={tool.path}
                 className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold no-underline transition-all duration-150"
                 style={{
                   borderColor: "#6C63FF",

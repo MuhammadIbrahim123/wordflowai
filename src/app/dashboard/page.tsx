@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "motion/react";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   FileText, Sparkles, LayoutList, Crown, Wand2, Zap,
   Copy, Eye, ArrowRight,
@@ -198,7 +198,7 @@ export default function DashboardPage() {
             Current Plan
           </p>
           <Link
-            to="/pricing"
+            href="/pricing"
             className="text-xs font-semibold no-underline"
             style={{ color: "#6C63FF", fontFamily: "Inter, sans-serif" }}
           >
@@ -354,7 +354,7 @@ export default function DashboardPage() {
               variants={{ hidden: { opacity: 0, x: -15 }, visible: { opacity: 1, x: 0, transition: { duration: 0.2 } } }}
             >
               <Link
-                to={path}
+                href={path}
                 className="flex flex-shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold no-underline transition-all duration-150"
                 style={{
                   border: "1.5px solid #D4D0FF",
@@ -398,7 +398,7 @@ export default function DashboardPage() {
             Recent Generations
           </h3>
           <Link
-            to="/dashboard/history"
+            href="/dashboard/history"
             className="flex items-center gap-1 text-xs font-semibold no-underline"
             style={{ color: "#6C63FF", fontFamily: "Inter, sans-serif" }}
           >

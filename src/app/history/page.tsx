@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { Copy, Eye, Trash2, Search, Filter } from "lucide-react";
 import { DashboardLayout } from "../components/DashboardLayout";
 import { toast } from "sonner";

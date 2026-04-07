@@ -4,16 +4,16 @@
 // 3. Add `export const metadata = { title: '...', description: '...' }` for SEO
 // 4. Mark interactive sub-components with 'use client' (already done)
 
-import { Navbar } from "../components/Navbar";
+import { Navbar } from "./Navbar";
 import React from "react";
-import { Hero } from "../components/Hero";
-import { SocialProof } from "../components/SocialProof";
-import { Features } from "../components/Features";
-import { HowItWorks } from "../components/HowItWorks";
-import { Pricing } from "../components/Pricing";
-import { Testimonials } from "../components/Testimonials";
-import { CtaBanner } from "../components/CtaBanner";
-import { Footer } from "../components/Footer";
+import { Hero } from "./Hero";
+import { SocialProof } from "./SocialProof";
+import { Features } from "./Features";
+import { HowItWorks } from "./HowItWorks";
+import { Pricing } from "./Pricing";
+import { Testimonials } from "./Testimonials";
+import { CtaBanner } from "./CtaBanner";
+import { Footer } from "./Footer";
 
 export default function LandingPage() {
   return (

@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import React from "react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { User, Lock, Bell, Shield, Check, AlertTriangle } from "lucide-react";
-import { DashboardLayout } from "../components/DashboardLayout";
+import { DashboardLayout } from "../../components/DashboardLayout";
 import { toast } from "sonner";
 
 const TABS = ["Profile", "Security", "Notifications", "Privacy"];

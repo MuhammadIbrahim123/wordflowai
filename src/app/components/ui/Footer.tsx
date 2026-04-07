@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { PenLine, Twitter, Linkedin, Youtube } from "lucide-react";
+import { ExternalLinkIcon, LinkIcon, PenLine, PlayIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const LINKS = {
@@ -18,9 +18,9 @@ const LINK_HREFS: Record<string, string> = {
 };
 
 const SOCIALS = [
-  { Icon: Twitter, label: "Twitter" },
-  { Icon: Linkedin, label: "LinkedIn" },
-  { Icon: Youtube, label: "YouTube" },
+  { Icon: ExternalLinkIcon, label: "Twitter" },
+  { Icon: LinkIcon, label: "LinkedIn" },
+  { Icon: PlayIcon, label: "YouTube" },
 ];
 
 export function Footer() {
