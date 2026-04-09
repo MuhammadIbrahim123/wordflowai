@@ -3,6 +3,7 @@
 import { useState } from "react";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff, ArrowRight, PenLine } from "lucide-react";
 
 const STATS = [
@@ -12,6 +13,7 @@ const STATS = [
 ];
 
 export default function LoginPage() {
+  const router = useRouter();
   const [show, setShow] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   const [form, setForm] = useState({ email: "", password: "" });
@@ -172,7 +174,7 @@ export default function LoginPage() {
             Sign in to your account
           </h2>
           <p className="mb-7 text-sm" style={{ color: "#8A8FA8", fontFamily: "Inter, sans-serif" }}>
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/signup" className="font-semibold no-underline" style={{ color: "#6C63FF" }}>
               Sign Up
             </Link>
@@ -200,7 +202,14 @@ export default function LoginPage() {
           </div>
 
           {/* Fields */}
-          <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!form.email.trim() || !form.password.trim()) return;
+              router.push("/dashboard");
+            }}
+          >
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium" style={{ color: "#374151", fontFamily: "Inter, sans-serif" }}>
                 Email Address

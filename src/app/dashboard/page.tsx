@@ -10,7 +10,6 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer,
 } from "recharts";
-import { DashboardLayout } from "../components/DashboardLayout";
 import { toast } from "sonner";
 
 /* ─── Chart data ─── */
@@ -40,14 +39,14 @@ const CHART_DATA = { "7D": CHART_7D, "30D": CHART_30D, "3M": CHART_3M } as const
 
 /* ─── Quick tools ─── */
 const QUICK_TOOLS = [
-  { emoji: "✍️", label: "Blog Writer",   path: "/tools/blog-writer" },
-  { emoji: "💡", label: "Headlines",     path: "/tools" },
-  { emoji: "🔄", label: "Paraphraser",   path: "/tools" },
-  { emoji: "🎨", label: "Tone Changer",  path: "/tools" },
-  { emoji: "🛒", label: "Product Desc",  path: "/tools" },
-  { emoji: "📧", label: "Email Writer",  path: "/tools" },
-  { emoji: "🔑", label: "SEO Meta",      path: "/tools" },
-  { emoji: "➕", label: "All Tools",     path: "/tools" },
+  { emoji: "✍️", label: "Blog Writer",   path: "/dashboard/tools/blog-writer" },
+  { emoji: "💡", label: "Headlines",     path: "/dashboard/tools" },
+  { emoji: "🔄", label: "Paraphraser",   path: "/dashboard/tools" },
+  { emoji: "🎨", label: "Tone Changer",  path: "/dashboard/tools" },
+  { emoji: "🛒", label: "Product Desc",  path: "/dashboard/tools" },
+  { emoji: "📧", label: "Email Writer",  path: "/dashboard/tools" },
+  { emoji: "🔑", label: "SEO Meta",      path: "/dashboard/tools" },
+  { emoji: "➕", label: "All Tools",     path: "/dashboard/tools" },
 ];
 
 /* ─── Recent generations ─── */
@@ -72,7 +71,7 @@ export default function DashboardPage() {
   const [timeRange, setTimeRange] = useState<"7D" | "30D" | "3M">("30D");
 
   return (
-    <DashboardLayout>
+    <>
       {/* Page heading */}
       <div className="mb-6">
         <h1
@@ -86,14 +85,14 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p className="mt-0.5 text-sm" style={{ color: "#8A8FA8", fontFamily: "Inter, sans-serif" }}>
-          Here's what's happening with your content today.
+          Here&apos;s what&apos;s happening with your content today.
         </p>
       </div>
 
       {/* ── SECTION 1 — Stats cards ── */}
       <motion.div
         className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4"
-        initial="hidden"
+        initial={false}
         animate="visible"
         variants={CARD_CONTAINER}
       >
@@ -209,7 +208,7 @@ export default function DashboardPage() {
 
       {/* ── SECTION 2 — Usage Overview Chart ── */}
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={false}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mb-6 rounded-2xl bg-white p-6"
@@ -344,7 +343,7 @@ export default function DashboardPage() {
         <motion.div
           className="flex gap-2 overflow-x-auto pb-1"
           style={{ scrollbarWidth: "none" }}
-          initial="hidden"
+          initial={false}
           animate="visible"
           variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
         >
@@ -355,7 +354,7 @@ export default function DashboardPage() {
             >
               <Link
                 href={path}
-                className="flex flex-shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold no-underline transition-all duration-150"
+                className="flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold no-underline transition-all duration-150"
                 style={{
                   border: "1.5px solid #D4D0FF",
                   color: "#6C63FF",
@@ -398,7 +397,7 @@ export default function DashboardPage() {
             Recent Generations
           </h3>
           <Link
-            href="/dashboard/history"
+            href="/history"
             className="flex items-center gap-1 text-xs font-semibold no-underline"
             style={{ color: "#6C63FF", fontFamily: "Inter, sans-serif" }}
           >
@@ -510,7 +509,7 @@ export default function DashboardPage() {
               className="text-sm font-bold"
               style={{ fontFamily: "Plus Jakarta Sans, sans-serif", color: "#1C2033" }}
             >
-              You're on the Starter Plan
+              You&apos;re on the Starter Plan
             </span>
           </div>
           <p className="mb-3 text-xs" style={{ color: "#8A8FA8", fontFamily: "Inter, sans-serif" }}>
@@ -523,7 +522,7 @@ export default function DashboardPage() {
         <motion.button
           animate={{ scale: [1, 1.02, 1] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="flex flex-shrink-0 items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          className="flex shrink-0 items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           style={{
             background: "#6C63FF",
             border: "none",
@@ -535,6 +534,6 @@ export default function DashboardPage() {
           Upgrade to Pro →
         </motion.button>
       </div>
-    </DashboardLayout>
+    </>
   );
 }

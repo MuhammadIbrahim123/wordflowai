@@ -1,104 +1,71 @@
 "use client";
-import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  Search,
-  Wand2,
-  PenSquare,
-  Lightbulb,
-  RefreshCw,
-  Palette,
-  ShoppingCart,
-  Mail,
-  KeyRound,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import Link from "next/link";
+import React from "react";
 import { useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Search, ArrowRight, Wand2 } from "lucide-react";
+import { DashboardLayout } from "../components/DashboardLayout";
 
 const CATEGORIES = ["All", "Blog", "Copywriting", "SEO", "Social"];
 
 const TOOLS = [
   {
-    icon: PenSquare,
+    emoji: "✍️",
     title: "Blog Post Writer",
     desc: "Generate full SEO-optimized blog posts from a title and keywords in seconds",
     uses: 2341,
-    path: "/dashboard/tools/blog-writer",
+    path: "/tools/blog-writer",
     category: "Blog",
-    iconColor: "#6C63FF",
-    iconBg: "#F0EFFF",
   },
   {
-    icon: Lightbulb,
+    emoji: "💡",
     title: "Headline Generator",
     desc: "Create 10+ powerful headline variations that stop the scroll and drive clicks",
     uses: 1876,
-    path: "/dashboard/tools",
+    path: "/tools",
     category: "Copywriting",
-    iconColor: "#D97706",
-    iconBg: "#FFF7ED",
   },
   {
-    icon: RefreshCw,
+    emoji: "🔄",
     title: "Paraphraser",
     desc: "Rewrite any content in a fresh tone while keeping the core meaning intact",
     uses: 1203,
-    path: "/dashboard/tools",
+    path: "/tools",
     category: "Copywriting",
-    iconColor: "#0891B2",
-    iconBg: "#ECFEFF",
   },
   {
-    icon: Palette,
+    emoji: "🎨",
     title: "Tone Changer",
     desc: "Switch between formal, casual, professional and friendly tones in one click",
     uses: 987,
-    path: "/dashboard/tools",
+    path: "/tools",
     category: "Copywriting",
-    iconColor: "#7C3AED",
-    iconBg: "#F5F3FF",
   },
   {
-    icon: ShoppingCart,
+    emoji: "🛒",
     title: "Product Description",
     desc: "Write eCommerce product copy that converts browsers into buyers at scale",
     uses: 854,
-    path: "/dashboard/tools",
+    path: "/tools",
     category: "Copywriting",
-    iconColor: "#059669",
-    iconBg: "#ECFDF5",
   },
   {
-    icon: Mail,
+    emoji: "📧",
     title: "Email Writer",
     desc: "Write professional emails, follow-ups and newsletters in seconds",
     uses: 743,
-    path: "/dashboard/tools",
+    path: "/tools",
     category: "Social",
-    iconColor: "#2563EB",
-    iconBg: "#EFF6FF",
   },
   {
-    icon: KeyRound,
+    emoji: "🔑",
     title: "SEO Meta Writer",
     desc: "Generate optimized title tags and meta descriptions that rank higher",
     uses: 612,
-    path: "/dashboard/tools",
+    path: "/tools",
     category: "SEO",
-    iconColor: "#CA8A04",
-    iconBg: "#FEFCE8",
   },
-] as const satisfies ReadonlyArray<{
-  icon: LucideIcon;
-  title: string;
-  desc: string;
-  uses: number;
-  path: string;
-  category: (typeof CATEGORIES)[number];
-  iconColor: string;
-  iconBg: string;
-}>;
+];
 
 export default function ToolsPage() {
   const [category, setCategory] = useState("All");
@@ -112,7 +79,7 @@ export default function ToolsPage() {
   });
 
   return (
-    <>
+    <DashboardLayout>
       {/* Heading */}
       <div className="mb-6 flex items-center gap-2">
         <Wand2 className="h-5 w-5" style={{ color: "#6C63FF" }} />
@@ -139,7 +106,7 @@ export default function ToolsPage() {
             flex: 1,
           }}
         >
-          <Search className="h-4 w-4 shrink-0" style={{ color: "#9CA3AF" }} />
+          <Search className="h-4 w-4 flex-shrink-0" style={{ color: "#9CA3AF" }} />
           <input
             type="text"
             placeholder="Search tools..."
@@ -177,7 +144,7 @@ export default function ToolsPage() {
       {/* Tools grid */}
       <motion.div
         className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
-        initial={false}
+        initial="hidden"
         animate="visible"
         variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
       >
@@ -194,23 +161,23 @@ export default function ToolsPage() {
               border: "1.5px solid #F3F4F6",
               boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
-            onMouseEnter={(e) => {
+            onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
               (e.currentTarget as HTMLDivElement).style.boxShadow =
                 "0 12px 40px rgba(108,99,255,0.1)";
               (e.currentTarget as HTMLDivElement).style.borderColor = "#D4D0FF";
             }}
-            onMouseLeave={(e) => {
+            onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
               (e.currentTarget as HTMLDivElement).style.boxShadow =
                 "0 2px 8px rgba(0,0,0,0.04)";
               (e.currentTarget as HTMLDivElement).style.borderColor = "#F3F4F6";
             }}
           >
-            {/* Tool icon */}
+            {/* Emoji icon */}
             <div
-              className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl"
-              style={{ background: tool.iconBg }}
+              className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl text-2xl"
+              style={{ background: "#F0EFFF" }}
             >
-              <tool.icon className="h-5 w-5" style={{ color: tool.iconColor }} />
+              {tool.emoji}
             </div>
 
             {/* Name + desc */}
@@ -255,16 +222,16 @@ export default function ToolsPage() {
                   fontFamily: "Inter, sans-serif",
                   background: "transparent",
                 }}
-                onMouseEnter={(e) => {
+                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.currentTarget.style.background = "#6C63FF";
                   e.currentTarget.style.color = "#fff";
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.currentTarget.style.background = "transparent";
                   e.currentTarget.style.color = "#6C63FF";
                 }}
               >
-                Use Tool
+                Use Tool →
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -279,6 +246,6 @@ export default function ToolsPage() {
           </p>
         </div>
       )}
-    </>
+    </DashboardLayout>
   );
 }

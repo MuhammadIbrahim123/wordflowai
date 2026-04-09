@@ -12,8 +12,8 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 const NAV = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: Wand2, label: "All Tools", path: "/tools" },
-  { icon: History, label: "History", path: "/dashboard/history" },
+  { icon: Wand2, label: "All Tools", path: "/dashboard/tools" },
+  { icon: History, label: "History", path: "/history" },
   { icon: CreditCard, label: "Billing", path: "/account" },
   { icon: Settings, label: "Settings", path: "/dashboard/settings" },
 ];
@@ -89,13 +89,13 @@ function SidebarInner({ onNavClick }: { onNavClick?: () => void }) {
       <motion.nav
         className="flex-1 overflow-y-auto py-3"
         variants={NAV_CONTAINER}
-        initial="hidden"
+        initial={false}
         animate="visible"
       >
         {NAV.map(({ icon: Icon, label, path }) => {
           const active =
-            path === "/tools"
-              ? pathname.startsWith("/tools")
+            path === "/dashboard/tools"
+              ? pathname.startsWith("/dashboard/tools")
               : pathname === path;
           return (
             <motion.div key={label} variants={NAV_ITEM}>
@@ -225,7 +225,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
       {/* Desktop sidebar — always visible on lg+ */}
       <motion.aside
         className="fixed inset-y-0 left-0 z-40 hidden w-60 lg:block"
-        initial={{ x: -20, opacity: 0 }}
+        initial={false}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.3 }}
         style={{
@@ -265,7 +265,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
       <div className="flex flex-1 flex-col lg:ml-60">
         {/* TopBar */}
         <motion.header
-          initial={{ opacity: 0 }}
+          initial={false}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
           className="sticky top-0 z-30 flex h-16 flex-shrink-0 items-center gap-3 px-4 lg:px-8"

@@ -57,7 +57,7 @@ export default function HistoryPage() {
           className="flex items-center gap-2 rounded-xl px-4 py-2.5"
           style={{ background: "#fff", border: "1.5px solid #E5E7EB", maxWidth: 360, flex: 1 }}
         >
-          <Search className="h-4 w-4 flex-shrink-0" style={{ color: "#9CA3AF" }} />
+          <Search className="h-4 w-4 shrink-0" style={{ color: "#9CA3AF" }} />
           <input
             type="text"
             placeholder="Search history..."
@@ -92,7 +92,7 @@ export default function HistoryPage() {
 
       {/* Table */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="overflow-hidden rounded-2xl bg-white"
@@ -117,7 +117,7 @@ export default function HistoryPage() {
               {filtered.map((row, i) => (
                 <motion.tr
                   key={row.id}
-                  initial={{ opacity: 0 }}
+                  initial={false}
                   animate={{ opacity: 1 }}
                   transition={{ delay: i * 0.04 }}
                   style={{

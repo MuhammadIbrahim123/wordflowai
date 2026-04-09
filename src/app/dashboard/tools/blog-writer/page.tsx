@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import { DashboardLayout } from "../../../components/DashboardLayout";
 import { ArrowLeft, Sparkles, Copy, Download, RefreshCw, ChevronDown, Wand2 } from "lucide-react";
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
@@ -66,15 +65,17 @@ export default function BlogWriterPage() {
 
   const copy = () => {
     navigator.clipboard.writeText(output);
+    setCopied(true);
     toast.success("Copied to clipboard!");
+    window.setTimeout(() => setCopied(false), 1200);
   };
 
   return (
-    <DashboardLayout title="Blog Post Writer">
+    <>
       {/* Top bar */}
       <div className="mb-6 flex items-center gap-3">
         <Link
-          href="/tools"
+          href="/dashboard/tools"
           className="flex h-8 w-8 items-center justify-center rounded-lg no-underline transition-colors hover:bg-[#F0EFFF]"
           style={{ border: "1px solid #E5E7EB" }}
         >
@@ -97,7 +98,7 @@ export default function BlogWriterPage() {
       <div className="flex h-full gap-5">
         {/* LEFT: Input form */}
         <div
-          className="flex w-[380px] flex-shrink-0 flex-col gap-5 rounded-2xl bg-white p-6"
+          className="flex w-[380px] shrink-0 flex-col gap-5 rounded-2xl bg-white p-6"
           style={{ border: "1.5px solid #F3F4F6", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
         >
           {/* Header */}
@@ -436,6 +437,6 @@ export default function BlogWriterPage() {
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </>
   );
 }

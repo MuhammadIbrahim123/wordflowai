@@ -3,7 +3,6 @@ import { useState } from "react";
 import React from "react";
 import { motion } from "framer-motion";
 import { User, Lock, Bell, Shield, Check, AlertTriangle } from "lucide-react";
-import { DashboardLayout } from "../../components/DashboardLayout";
 import { toast } from "sonner";
 
 const TABS = ["Profile", "Security", "Notifications", "Privacy"];
@@ -75,7 +74,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <DashboardLayout>
+    <>
       {/* Heading */}
       <div className="mb-6">
         <h1
@@ -390,7 +389,7 @@ export default function SettingsPage() {
                   </div>
                   <button
                     onClick={action}
-                    className="ml-4 flex-shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-[#F0EFFF]"
+                    className="ml-4 shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-[#F0EFFF]"
                     style={{ borderColor: "#D4D0FF", color: "#6C63FF", background: "transparent", cursor: "pointer", fontFamily: "Inter, sans-serif" }}
                   >
                     {label.split(" ")[0]}
@@ -401,6 +400,6 @@ export default function SettingsPage() {
           </div>
         </motion.div>
       )}
-    </DashboardLayout>
+    </>
   );
 }

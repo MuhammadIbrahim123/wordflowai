@@ -131,7 +131,7 @@ export function Features() {
               </div>
 
               <a
-                // href="/tools"
+                href="/tools"
                 className="mt-auto flex items-center gap-1 text-sm font-semibold no-underline cursor-pointer"
                 style={{ color }}
               >
