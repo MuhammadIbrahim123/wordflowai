@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +28,44 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body suppressHydrationWarning className="min-h-full flex flex-col">
+        <Script id="strip-browser-injected-attrs" strategy="beforeInteractive">
+          {`
+            (() => {
+              const ATTRS = ["bis_skin_checked"];
+              const removeAttrs = (root) => {
+                for (const attr of ATTRS) {
+                  if (root instanceof Element && root.hasAttribute(attr)) {
+                    root.removeAttribute(attr);
+                  }
+                  if (root.querySelectorAll) {
+                    root.querySelectorAll("[" + attr + "]").forEach((el) => el.removeAttribute(attr));
+                  }
+                }
+              };
+
+              removeAttrs(document.documentElement);
+
+              const observer = new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                  if (mutation.type === "attributes" && mutation.target) {
+                    removeAttrs(mutation.target);
+                  }
+                  mutation.addedNodes.forEach((node) => removeAttrs(node));
+                }
+              });
+
+              observer.observe(document.documentElement, {
+                subtree: true,
+                childList: true,
+                attributes: true,
+                attributeFilter: ATTRS,
+              });
+            })();
+          `}
+        </Script>
+        {children}
+      </body>
     </html>
   );
 }

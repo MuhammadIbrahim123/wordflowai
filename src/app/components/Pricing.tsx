@@ -218,7 +218,7 @@ export function Pricing() {
 
         <p className="mt-10 text-center text-sm" style={{ color: "#8A8FA8", fontFamily: "Inter, sans-serif" }}>
           <Link href="/pricing" className="font-semibold no-underline" style={{ color: "#6C63FF" }}>
-            View full pricing details →
+            View full pricing details →jkhkj
           </Link>
         </p>
       </div>

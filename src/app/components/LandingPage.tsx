@@ -5,19 +5,18 @@
 // 4. Mark interactive sub-components with 'use client' (already done)
 
 import { Navbar } from "../components/Navbar";
-import React from "react";
-import { Hero } from "../components/Hero";
 import { SocialProof } from "../components/SocialProof";
 import { Features } from "../components/Features";
 import { HowItWorks } from "../components/HowItWorks";
-import { Pricing } from "../components/Pricing";
 import { Testimonials } from "../components/Testimonials";
 import { CtaBanner } from "../components/CtaBanner";
 import { Footer } from "../components/Footer";
+import { Hero } from "./ui/Hero";
+import { Pricing } from "./Pricing";
 
 export default function LandingPage() {
   return (
-    <div style={{ background: "#fff", overflowX: "hidden" }}>
+    <div suppressHydrationWarning style={{ background: "#fff", overflowX: "hidden" }}>
       <Navbar />
       <main>
         <Hero />
