@@ -10,7 +10,7 @@ const fadeUp = {
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1], delay },
+    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay },
   }),
 };
 
@@ -18,7 +18,7 @@ const fadeIn = {
   hidden: { opacity: 0 },
   visible: (delay = 0) => ({
     opacity: 1,
-    transition: { duration: 0.5, ease: "easeOut", delay },
+    transition: { duration: 0.5, ease: "easeOut" as const, delay },
   }),
 };
 
@@ -27,7 +27,7 @@ const slideRight = {
   visible: (delay = 0) => ({
     opacity: 1,
     x: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay },
   }),
 };
 
@@ -35,7 +35,7 @@ const slideRight = {
 const cursorVariants = {
   blink: {
     opacity: [1, 0, 1],
-    transition: { duration: 1, repeat: Infinity, ease: "linear" },
+    transition: { duration: 1, repeat: Infinity, ease: "linear" as const },
   },
 };
 

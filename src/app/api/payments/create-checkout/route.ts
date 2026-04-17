@@ -12,7 +12,13 @@ interface CheckoutBody {
   plan?: CheckoutPlan;
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
+function getStripeClient(): Stripe | null {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) {
+    return null;
+  }
+  return new Stripe(secretKey);
+}
 
 const PRICE_MAP: Record<CheckoutPlan, string | undefined> = {
   starter: process.env.STRIPE_PRICE_STARTER,
@@ -21,6 +27,11 @@ const PRICE_MAP: Record<CheckoutPlan, string | undefined> = {
 
 export async function POST(request: Request) {
   try {
+    const stripe = getStripeClient();
+    if (!stripe) {
+      return NextResponse.json({ success: false, error: "Stripe is not configured." }, { status: 500 });
+    }
+
     await connectDB();
     const session = await getServerSession(authOptions);
 

@@ -4,8 +4,17 @@ import Stripe from "stripe";
 import { connectDB } from "@/lib/mongodb";
 import User, { type UserPlan } from "@/models/User";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+function getStripeConfig(): { stripe: Stripe; webhookSecret: string } | null {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!secretKey || !webhookSecret) {
+    return null;
+  }
+  return {
+    stripe: new Stripe(secretKey),
+    webhookSecret,
+  };
+}
 
 const PLAN_CREDITS: Record<Exclude<UserPlan, "free">, number> = {
   starter: 50000,
@@ -27,10 +36,19 @@ function inferPlanFromSession(session: Stripe.Checkout.Session): Exclude<UserPla
 
 export async function POST(request: Request) {
   try {
+    const stripeConfig = getStripeConfig();
+    if (!stripeConfig) {
+      return NextResponse.json(
+        { success: false, error: "Invalid webhook configuration." },
+        { status: 400 },
+      );
+    }
+
+    const { stripe, webhookSecret } = stripeConfig;
     await connectDB();
 
     const signature = request.headers.get("stripe-signature");
-    if (!signature || !webhookSecret) {
+    if (!signature) {
       return NextResponse.json(
         { success: false, error: "Invalid webhook configuration." },
         { status: 400 },

@@ -68,8 +68,12 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.plan = (user as { plan: IUser["plan"] }).plan;
-        token.credits = (user as { credits: IUser["credits"] }).credits;
+        if ("plan" in user) {
+          token.plan = user.plan as IUser["plan"];
+        }
+        if ("credits" in user) {
+          token.credits = user.credits as IUser["credits"];
+        }
       }
       return token;
     },
