@@ -67,7 +67,7 @@ const fadeUp = (delay = 0) => ({
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as number[], delay },
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay },
   },
 });
 
@@ -81,7 +81,7 @@ const cardVariant = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as number[] },
+    transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   },
 };
 
@@ -207,7 +207,7 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
             className="overflow-hidden rounded-2xl"
             style={{ border: "1.5px solid #E8E6FF", boxShadow: "0 4px 24px rgba(108,99,255,0.1)" }}
           >
@@ -410,7 +410,7 @@ export default function BlogPage() {
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
       >
         <div className="mx-auto max-w-[720px] px-6 text-center">
           <h3
