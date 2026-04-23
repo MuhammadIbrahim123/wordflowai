@@ -1,5 +1,7 @@
 "use client";
 // Next.js: rename to app/signup/page.tsx, swap Link import, add metadata export
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import React from "react";
 import Link from "next/link";
@@ -12,9 +14,11 @@ const BENEFITS = [
 ];
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [show, setShow] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [error, setError] = useState("");
 
   const field = (key: keyof typeof form) => ({
     value: form[key],
@@ -262,7 +266,38 @@ export default function SignUpPage() {
           </div>
 
           {/* Fields */}
-          <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (!form.name.trim() || !form.email.trim() || !form.password.trim()) return;
+              setError("");
+              const formName = form.name.trim();
+              const formEmail = form.email.trim();
+              const formPassword = form.password;
+              const res = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: formName, email: formEmail, password: formPassword }),
+              });
+              const data = await res.json();
+              if (data.success) {
+                const signInResult = await signIn("credentials", {
+                  email: formEmail,
+                  password: formPassword,
+                  redirect: false,
+                  callbackUrl: "/dashboard",
+                });
+                if (signInResult?.ok) {
+                  router.push("/dashboard");
+                } else {
+                  router.push("/login?registered=true");
+                }
+              } else {
+                setError(data.error || "Registration failed");
+              }
+            }}
+          >
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium" style={{ color: "#374151", fontFamily: "Inter, sans-serif" }}>
                 Full Name
@@ -318,6 +353,14 @@ export default function SignUpPage() {
               Create Free Account
               <ArrowRight className="h-4 w-4" />
             </button>
+            {error ? (
+              <p
+                className="text-sm"
+                style={{ color: "#DC2626", fontFamily: "Inter, sans-serif" }}
+              >
+                {error}
+              </p>
+            ) : null}
 
             <p className="text-center text-xs" style={{ color: "#B0B4C4", fontFamily: "Inter, sans-serif" }}>
               By signing up you agree to our{" "}

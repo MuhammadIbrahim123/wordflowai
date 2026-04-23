@@ -13,9 +13,12 @@ const cached = global.mongooseCache ?? { conn: null, promise: null };
 global.mongooseCache = cached;
 
 export async function connectDB(): Promise<typeof mongoose> {
-  const mongoUri = process.env.MONGODB_URI;
+  const mongoUri =
+    process.env.MONGODB_URI ||
+    process.env.MONGO_URI ||
+    process.env.DATABASE_URL;
   if (!mongoUri) {
-    throw new Error("MONGODB_URI is not defined");
+    throw new Error("MongoDB connection string is not defined");
   }
 
   if (cached.conn) {
@@ -23,7 +26,13 @@ export async function connectDB(): Promise<typeof mongoose> {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(mongoUri);
+    cached.promise = mongoose.connect(mongoUri).catch((error: unknown) => {
+      const message = error instanceof Error ? error.message : String(error);
+      if (message.toLowerCase().includes("bad auth")) {
+        throw new Error("Invalid MongoDB credentials. Check your MONGODB_URI in .env.local.");
+      }
+      throw error;
+    });
   }
 
   cached.conn = await cached.promise;

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+
+import SessionWrapper from "@/components/SessionWrapper";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -64,7 +66,7 @@ export default function RootLayout({
             })();
           `}
         </Script>
-        {children}
+        <SessionWrapper>{children}</SessionWrapper>
       </body>
     </html>
   );

@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, Wand2, History, CreditCard, Settings,
@@ -28,6 +29,16 @@ const NAV_ITEM = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.2 } },
 };
 
+interface DashboardUser {
+  name: string;
+  email: string;
+  plan: string;
+  credits?: {
+    used: number;
+    total: number;
+  };
+}
+
 function getGreeting() {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
@@ -35,7 +46,22 @@ function getGreeting() {
   return "Good evening";
 }
 
-function SidebarInner({ onNavClick }: { onNavClick?: () => void }) {
+function getInitials(name: string) {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "U";
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return `${words[0][0]}${words[1][0]}`.toUpperCase();
+}
+
+function SidebarInner({
+  onNavClick,
+  user,
+  onLogout,
+}: {
+  onNavClick?: () => void;
+  user: DashboardUser;
+  onLogout: () => Promise<void>;
+}) {
   const pathname = usePathname();
   return (
     <div className="flex h-full flex-col" style={{ overflowY: "hidden" }}>
@@ -67,20 +93,20 @@ function SidebarInner({ onNavClick }: { onNavClick?: () => void }) {
           className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
           style={{ background: "#6C63FF", fontFamily: "Plus Jakarta Sans, sans-serif" }}
         >
-          AS
+          {getInitials(user.name)}
         </div>
         <div className="min-w-0">
           <p
             className="truncate text-sm font-semibold text-white"
             style={{ fontFamily: "Plus Jakarta Sans, sans-serif" }}
           >
-            Aizaz Shahid
+            {user.name}
           </p>
           <span
             className="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
             style={{ background: "#E8E6FF", color: "#6C63FF", fontFamily: "Inter, sans-serif" }}
           >
-            STARTER
+            {user.plan.toUpperCase()}
           </span>
         </div>
       </div>
@@ -193,6 +219,7 @@ function SidebarInner({ onNavClick }: { onNavClick?: () => void }) {
             cursor: "pointer",
             fontFamily: "Inter, sans-serif",
           }}
+          onClick={onLogout}
           onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.currentTarget.style.color = "#F87171";
           }}
@@ -216,6 +243,59 @@ interface Props {
 
 export function DashboardLayout({ children, title, subtitle }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const router = useRouter();
+  const [user, setUser] = useState<DashboardUser>({
+    name: "User",
+    email: "",
+    plan: "free",
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadDashboardData() {
+      try {
+        const response = await fetch("/api/dashboard", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (response.status === 401) {
+          router.replace("/login");
+          return;
+        }
+
+        const data = (await response.json()) as {
+          success?: boolean;
+          user?: DashboardUser;
+        };
+
+        if (response.ok && data.success && data.user && isMounted) {
+          setUser(data.user);
+        }
+      } catch (error) {
+        console.error("Failed to load dashboard data:", error);
+      }
+    }
+
+    loadDashboardData();
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
+
+  const userInitials = useMemo(() => getInitials(user.name), [user.name]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (error) {
+      console.error("Logout endpoint error:", error);
+    }
+
+    await signOut({ redirect: false });
+    router.replace("/login");
+  };
 
   return (
     <div
@@ -233,7 +313,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
           borderRight: "1px solid rgba(255,255,255,0.05)",
         }}
       >
-        <SidebarInner />
+        <SidebarInner user={user} onLogout={handleLogout} />
       </motion.aside>
 
       {/* Mobile sidebar + backdrop */}
@@ -255,7 +335,11 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
               transition={{ type: "spring", damping: 28, stiffness: 280 }}
               style={{ background: "#1C2033" }}
             >
-              <SidebarInner onNavClick={() => setMobileOpen(false)} />
+              <SidebarInner
+                onNavClick={() => setMobileOpen(false)}
+                user={user}
+                onLogout={handleLogout}
+              />
             </motion.aside>
           </>
         )}
@@ -294,7 +378,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
               className="text-sm font-semibold"
               style={{ fontFamily: "Plus Jakarta Sans, sans-serif", color: "#1C2033" }}
             >
-              {getGreeting()}, Aizaz 👋
+              {getGreeting()}, {user.name} 👋
             </p>
           </div>
 
@@ -342,7 +426,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
                   fontFamily: "Plus Jakarta Sans, sans-serif",
                 }}
               >
-                AS
+                {userInitials}
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -365,13 +449,13 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
                     className="text-sm font-semibold"
                     style={{ color: "#1C2033", fontFamily: "Plus Jakarta Sans, sans-serif" }}
                   >
-                    Aizaz Shahid
+                    {user.name}
                   </p>
                   <p
                     className="text-xs"
                     style={{ color: "#8A8FA8", fontFamily: "Inter, sans-serif" }}
                   >
-                    aizaz@example.com
+                    {user.email}
                   </p>
                 </div>
 
@@ -412,6 +496,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
                       border: "none",
                       fontFamily: "Inter, sans-serif",
                     }}
+                    onClick={handleLogout}
                     onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
                       e.currentTarget.style.background = "#FEF2F2";
                     }}

@@ -39,9 +39,11 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true }, { status: 201 });
-  } catch {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to register user.";
+    console.error("Register route error:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to register user." },
+      { success: false, error: message },
       { status: 500 },
     );
   }

@@ -1,9 +1,10 @@
 "use client";
 // Next.js: rename to app/login/page.tsx, swap Link import, add metadata export
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Eye, EyeOff, ArrowRight, PenLine } from "lucide-react";
 
 const STATS = [
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const [show, setShow] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
 
   const field = (key: keyof typeof form) => ({
     value: form[key],
@@ -204,10 +206,21 @@ export default function LoginPage() {
           {/* Fields */}
           <form
             className="flex flex-col gap-4"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               if (!form.email.trim() || !form.password.trim()) return;
-              router.push("/dashboard");
+              setError("");
+              const result = await signIn("credentials", {
+                email: form.email,
+                password: form.password,
+                redirect: false,
+                callbackUrl: "/dashboard",
+              });
+              if (result?.ok) {
+                router.push("/dashboard");
+              } else {
+                setError("Invalid email or password. Please try again.");
+              }
             }}
           >
             <div className="flex flex-col gap-1.5">
@@ -263,6 +276,14 @@ export default function LoginPage() {
               Sign In
               <ArrowRight className="h-4 w-4" />
             </button>
+            {error ? (
+              <p
+                className="text-sm"
+                style={{ color: "#DC2626", fontFamily: "Inter, sans-serif" }}
+              >
+                {error}
+              </p>
+            ) : null}
           </form>
         </div>
       </div>
