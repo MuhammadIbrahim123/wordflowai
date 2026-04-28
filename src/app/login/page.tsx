@@ -1,11 +1,9 @@
 "use client";
-// Next.js: rename to app/login/page.tsx, swap Link import, add metadata export
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import React from "react";
+import { signIn, getCsrfToken } from "next-auth/react";
+import { useState, useEffect, type ChangeEvent } from "react";
 import Link from "next/link";
-import { Eye, EyeOff, ArrowRight, PenLine } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, PenLine, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const STATS = [
   { v: "10,000+", l: "Active Writers" },
@@ -14,15 +12,18 @@ const STATS = [
 ];
 
 export default function LoginPage() {
-  const router = useRouter();
   const [show, setShow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getCsrfToken();
+  }, []);
 
   const field = (key: keyof typeof form) => ({
     value: form[key],
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+    onChange: (e: ChangeEvent<HTMLInputElement>) =>
       setForm({ ...form, [key]: e.target.value }),
     onFocus: () => setFocused(key),
     onBlur: () => setFocused(null),
@@ -208,18 +209,37 @@ export default function LoginPage() {
             className="flex flex-col gap-4"
             onSubmit={async (e) => {
               e.preventDefault();
-              if (!form.email.trim() || !form.password.trim()) return;
-              setError("");
+              if (!form.email.trim() && !form.password.trim()) {
+                toast.error("Fields are required", {
+                  description: "Please enter your email and password to sign in.",
+                });
+                return;
+              }
+              if (!form.email.trim()) {
+                toast.error("Email is required", {
+                  description: "Please enter your email address to continue.",
+                });
+                return;
+              }
+              if (!form.password.trim()) {
+                toast.error("Password is required", {
+                  description: "Please enter your password to continue.",
+                });
+                return;
+              }
+              setIsLoading(true);
               const result = await signIn("credentials", {
                 email: form.email,
                 password: form.password,
                 redirect: false,
-                callbackUrl: "/dashboard",
               });
               if (result?.ok) {
-                router.push("/dashboard");
+                window.location.href = "/dashboard";
               } else {
-                setError("Invalid email or password. Please try again.");
+                setIsLoading(false);
+                toast.error("Invalid email or password", {
+                  description: "Please check your credentials and try again.",
+                });
               }
             }}
           >
@@ -270,20 +290,22 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white transition-opacity hover:opacity-90"
-              style={{ background: "#6C63FF", border: "none", fontFamily: "Inter, sans-serif", boxShadow: "0 4px 16px rgba(108,99,255,0.35)", cursor: "pointer" }}
+              disabled={isLoading}
+              className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+              style={{ background: "#6C63FF", border: "none", fontFamily: "Inter, sans-serif", boxShadow: "0 4px 16px rgba(108,99,255,0.35)", cursor: isLoading ? "not-allowed" : "pointer" }}
             >
-              Sign In
-              <ArrowRight className="h-4 w-4" />
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  Sign In
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
             </button>
-            {error ? (
-              <p
-                className="text-sm"
-                style={{ color: "#DC2626", fontFamily: "Inter, sans-serif" }}
-              >
-                {error}
-              </p>
-            ) : null}
           </form>
         </div>
       </div>

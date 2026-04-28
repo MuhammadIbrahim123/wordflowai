@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import { Toaster } from "sonner";
 
 import SessionWrapper from "@/components/SessionWrapper";
 import "./globals.css";
@@ -67,6 +68,15 @@ export default function RootLayout({
           `}
         </Script>
         <SessionWrapper>{children}</SessionWrapper>
+        <Toaster
+          position="top-center"
+          richColors
+          expand={false}
+          duration={4000}
+          toastOptions={{
+            style: { fontFamily: "Inter, sans-serif" },
+          }}
+        />
       </body>
     </html>
   );

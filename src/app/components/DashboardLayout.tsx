@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -67,11 +67,11 @@ function SidebarInner({
     <div className="flex h-full flex-col" style={{ overflowY: "hidden" }}>
       {/* Logo */}
       <div
-        className="flex h-16 flex-shrink-0 items-center gap-2.5 px-5"
+        className="flex h-16 shrink-0 items-center gap-2.5 px-5"
         style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
       >
         <span
-          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
           style={{ background: "#6C63FF" }}
         >
           <PenLine className="h-4 w-4 text-white" />
@@ -90,7 +90,7 @@ function SidebarInner({
         style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
       >
         <div
-          className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
           style={{ background: "#6C63FF", fontFamily: "Plus Jakarta Sans, sans-serif" }}
         >
           {getInitials(user.name)}
@@ -146,7 +146,7 @@ function SidebarInner({
                   }
                 }}
               >
-                <Icon className="h-[18px] w-[18px] flex-shrink-0" />
+                <Icon className="h-4.5 w-4.5 shrink-0" />
                 <span
                   className="text-sm"
                   style={{
@@ -227,7 +227,7 @@ function SidebarInner({
             e.currentTarget.style.color = "rgba(255,255,255,0.3)";
           }}
         >
-          <LogOut className="h-[18px] w-[18px] flex-shrink-0" />
+          <LogOut className="h-4.5 w-4.5 shrink-0" />
           <span className="text-sm">Sign Out</span>
         </button>
       </div>
@@ -244,45 +244,19 @@ interface Props {
 export function DashboardLayout({ children, title, subtitle }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
-  const [user, setUser] = useState<DashboardUser>({
-    name: "User",
-    email: "",
-    plan: "free",
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.replace("/login");
+    },
   });
 
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadDashboardData() {
-      try {
-        const response = await fetch("/api/dashboard", {
-          method: "GET",
-          cache: "no-store",
-        });
-
-        if (response.status === 401) {
-          router.replace("/login");
-          return;
-        }
-
-        const data = (await response.json()) as {
-          success?: boolean;
-          user?: DashboardUser;
-        };
-
-        if (response.ok && data.success && data.user && isMounted) {
-          setUser(data.user);
-        }
-      } catch (error) {
-        console.error("Failed to load dashboard data:", error);
-      }
-    }
-
-    loadDashboardData();
-    return () => {
-      isMounted = false;
-    };
-  }, [router]);
+  const user: DashboardUser = {
+    name: session?.user?.name ?? "User",
+    email: session?.user?.email ?? "",
+    plan: session?.user?.plan ?? "free",
+    credits: session?.user?.credits,
+  };
 
   const userInitials = useMemo(() => getInitials(user.name), [user.name]);
 
@@ -352,7 +326,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
           initial={false}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="sticky top-0 z-30 flex h-16 flex-shrink-0 items-center gap-3 px-4 lg:px-8"
+          className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 px-4 lg:px-8"
           style={{
             background: "rgba(255,255,255,0.96)",
             backdropFilter: "blur(10px)",
@@ -361,7 +335,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
         >
           {/* Hamburger — mobile only */}
           <button
-            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl lg:hidden"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl lg:hidden"
             style={{
               background: "#F3F4F6",
               border: "1px solid #E5E7EB",
@@ -394,7 +368,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
               width: 260,
             }}
           >
-            <Search className="h-4 w-4 flex-shrink-0" style={{ color: "#9CA3AF" }} />
+            <Search className="h-4 w-4 shrink-0" style={{ color: "#9CA3AF" }} />
             <input
               type="text"
               placeholder="Search your generations..."
@@ -405,7 +379,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
 
           {/* Bell */}
           <button
-            className="relative flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl"
+            className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
             style={{ background: "#F3F4F6", border: "1px solid #E5E7EB", cursor: "pointer" }}
           >
             <Bell className="h-4 w-4" style={{ color: "#6B7280" }} />
@@ -419,7 +393,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
               <button
-                className="flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-xl text-sm font-bold text-white"
+                className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl text-sm font-bold text-white"
                 style={{
                   background: "#6C63FF",
                   border: "none",
@@ -431,7 +405,7 @@ export function DashboardLayout({ children, title, subtitle }: Props) {
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="z-[100] overflow-hidden rounded-xl bg-white p-1.5"
+                className="z-100 overflow-hidden rounded-xl bg-white p-1.5"
                 style={{
                   border: "1.5px solid #E5E7EB",
                   boxShadow: "0 16px 48px rgba(0,0,0,0.12)",
